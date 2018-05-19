@@ -13,7 +13,7 @@ import com.gemmano.dr.services.RegisterService;
 @RequestMapping("/register")
 public class RegisterController {
 	
-	@Value("${DB_URL}")
+	@Value("${db.url}")
 	private String dbUrl;
 	
 	private RegisterService registerService;
