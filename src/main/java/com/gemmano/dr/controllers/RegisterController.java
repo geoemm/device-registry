@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gemmano.dr.entities.Sync;
 import com.gemmano.dr.services.RegisterService;
 
 @RestController
@@ -23,10 +24,8 @@ public class RegisterController {
 
 	@RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-	public String registerDevice(@RequestParam("id") long id) {//TODO check for min/max
+	public Sync registerDevice(@RequestParam("id") long id) {//TODO check for min/max
 		
-		registerService.setDeviceState(id);
-		
-		return "OK";
+		return registerService.setDeviceState(id);
 	}
 }

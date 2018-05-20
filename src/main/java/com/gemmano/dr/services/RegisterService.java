@@ -1,39 +1,48 @@
 package com.gemmano.dr.services;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gemmano.dr.entities.DeviceStatus;
 import com.gemmano.dr.entities.Registry;
+import com.gemmano.dr.entities.Sync;
 import com.gemmano.dr.repositories.DeviceRepo;
+import com.gemmano.dr.repositories.SyncRepo;
 
 
 @Service
 public class RegisterService {
 	
 	private DeviceRepo deviceRepo;
+	private SyncRepo syncRepo;
 	
 	@Autowired	
-	public RegisterService(DeviceRepo deviceRepo) {
+	public RegisterService(DeviceRepo deviceRepo, SyncRepo syncRepo) {
 		this.deviceRepo = deviceRepo;
+		this.syncRepo = syncRepo;
 	}
 
-	public boolean setDeviceState(long id) {
+	public Sync setDeviceState(long id) {
 		
-		Registry myRegistry = new Registry();
-		myRegistry.setId(id);
-		myRegistry.setName("ESP8266");
-		myRegistry.setDescription("thermometer");
+		Sync newSync;
 		
-		deviceRepo.save(myRegistry);
-		
-		/*1 checkifexist
-		2 if does not return error
-		3 if it does add device to pool of devices set flag as ON
-		
+		if (deviceRepo.existsById(id)) {
+			Registry updateCurrentRegistry = new Registry();
+			updateCurrentRegistry.setId(id);
+			updateCurrentRegistry.setStatus(DeviceStatus.ON);
+			updateCurrentRegistry.setLastState(LocalDateTime.now());
+			deviceRepo.save(updateCurrentRegistry);
+			newSync = syncRepo.findById(1L).get();
+		} else {
+			return new Sync();
+		}
+		/*
 		table should keep history of device when it registers/unregisters
 		table should keep current state information like id/description*/
 		//change prop to update
-		return true;
+		return newSync;
 	}
 
 }
